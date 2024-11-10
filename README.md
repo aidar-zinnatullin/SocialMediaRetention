@@ -6,14 +6,15 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SocialMediaRetention is to …
+The goal of SocialMediaRetention is to compute the retention rates for
+two cohorts of users (YouTube commenters at the moment).
 
 ## Installation
 
 You can install the development version of SocialMediaRetention like so:
 
 ``` r
-# FILL THIS IN! HOW CAN PEOPLE INSTALL YOUR DEV PACKAGE?
+devtools::install_github("aidar-zinnatullin/SocialMediaRetention")
 ```
 
 ## Example
