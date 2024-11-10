@@ -1,13 +1,24 @@
-#' Preprocess Comment Data
+#' This function preprocesses the comment data by adding a column that indicates
+#' the order of comments for each user based on a specified time variable.
 #'
-#' This function preprocesses the comment data by adding necessary columns and filtering.
-#' @param data The comment data frame.
-#' @return A preprocessed data frame.
+#' @param data The data frame containing comment data.
+#' @param user_id A string specifying the column name to group by (e.g., user ID).
+#' @param activity_time A string specifying the time variable to order the comments (e.g., time of activity).
+#' @return A data frame with an additional column `to_know_first_comment` indicating the order of comments.
+#' @examples
+#' \dontrun{
+#' preprocessed_data <- preprocess_comments(data, user_id = "authorChannelId", activity_time = "publishedAt")
+#' }
 #' @export
-preprocess_comments <- function(data) {
+preprocess_comments <- function(data, user_id, activity_time) {
   library(dplyr)
+
+  group_by_var_sym <- sym(user_id)
+  publishedAt_var_sym <- sym(activity_time)
   data <- data %>%
-    group_by(authorChannelId) %>%
-    mutate(to_know_first_comment = row_number(publishedAt))
+    group_by(!!group_by_var_sym) %>%
+    mutate(to_know_first_comment = row_number(!!publishedAt_var_sym)) %>%
+    ungroup()
+
   return(data)
 }

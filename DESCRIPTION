@@ -14,4 +14,5 @@ Imports:
     dplyr,
     ggplot2,
     Hmisc,
-    lubridate
+    lubridate,
+    rlang

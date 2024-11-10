@@ -2,18 +2,49 @@
 % Please edit documentation in R/calculate_retention.R
 \name{calculate_retention}
 \alias{calculate_retention}
-\title{Calculate Retention Rates}
+\title{This function calculates the retention rates of commenters over specified time intervals.
+The user can specify the column names for the video's publication time, the comment's publication time,
+the video identifier, and the commenter identifier.}
 \usage{
-calculate_retention(data, intervals = seq(30, 450, 30))
+calculate_retention(
+  data,
+  intervals = seq(30, 450, 30),
+  higher_level_pub_time,
+  activity_time,
+  higher_level_id,
+  user_id
+)
 }
 \arguments{
-\item{data}{The preprocessed comment data.}
+\item{data}{The data frame containing comment data.}
 
-\item{intervals}{A vector of time intervals in days.}
+\item{intervals}{A vector of time intervals in days (default is seq(30, 450, 30)).}
+
+\item{higher_level_pub_time}{A string specifying the column name for the video's publication time.}
+
+\item{activity_time}{A string specifying the column name for the comment's publication time.}
+
+\item{higher_level_id}{A string specifying the column name for the video identifier.}
+
+\item{user_id}{A string specifying the column name for the commenter identifier.}
 }
 \value{
-A data frame with retention rates.
+A data frame with retention rates and percentages.
 }
 \description{
 This function calculates the retention rates of commenters over specified time intervals.
+The user can specify the column names for the video's publication time, the comment's publication time,
+the video identifier, and the commenter identifier.
+}
+\examples{
+\dontrun{
+retention_data <- calculate_retention(
+    data = treated_data,
+    intervals = seq(30, 450, 30),
+    higher_level_pub_time = "contentDetails.videoPublishedAt",
+    activity_time = "publishedAt",
+    higher_level_id = "Doc_name",
+    user_id = "authorChannelId"
+)
+}
 }

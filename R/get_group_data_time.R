@@ -1,41 +1,56 @@
-#' Extract Group Data Based on Initial Interaction within a Specified Time Frame
-#'
 #' This function identifies commenters whose first comment was on a video in a specified group (e.g., treated or control),
 #' and who made their first comment within a specified number of days after the video release.
 #' It then retrieves all comments made by these commenters.
 #'
-#' @param data The preprocessed data frame containing comment data.
-#' @param group_videos A vector of `Doc_name` values representing the group of interest (treated or control).
+#' @param data The data frame containing comment data.
+#' @param group_videos A vector of video identifiers (e.g., `Doc_name`) representing the group of interest.
 #' @param days_after_release Number of days after video release within which the first comment must have been made (default is 7).
+#' @param activity_time A string specifying the column name for the comment's publication time.
+#' @param higher_level_pub_time A string specifying the column name for the video's publication time.
+#' @param higher_level_id A string specifying the column name for the video identifier.
+#' @param user_id A string specifying the column name for the commenter identifier.
 #' @return A data frame containing all comments from commenters whose first comment was on a video in `group_videos` within the specified time frame.
 #' @examples
 #' \dontrun{
-#' treated_data <- get_group_data(preprocessed_data, treated_group, days_after_release = 7)
+#' treated_data <- get_group_data_time(
+#'     data = preprocessed_data,
+#'     group_videos = treated_group,
+#'     days_after_release = 7,
+#'     activity_time = "publishedAt",
+#'     higher_level_pub_time = "contentDetails.videoPublishedAt",
+#'     higher_level_id = "Doc_name",
+#'     user_id = "authorChannelId"
+#' )
 #' }
 #' @export
-get_group_data_time <- function(data, group_videos, days_after_release = 7) {
+get_group_data_time <- function(data, group_videos, days_after_release = 7,
+                                activity_time, higher_level_pub_time,
+                                higher_level_id, user_id) {
   # Ensure necessary packages are loaded
   library(dplyr)
   library(lubridate)  # For date arithmetic
+  library(rlang)      # For tidy evaluation
 
-  # Ensure date columns are in POSIXct format
+  publishedAt_sym <- sym(activity_time)
+  videoPublishedAt_sym <- sym(higher_level_pub_time)
+  doc_name_sym <- sym(higher_level_id)
+  author_id_sym <- sym(user_id)
+
   data <- data %>%
     mutate(
-      publishedAt = as.POSIXct(publishedAt),
-      contentDetails.videoPublishedAt = as.POSIXct(contentDetails.videoPublishedAt)
+      !!publishedAt_sym := as.POSIXct(!!publishedAt_sym),
+      !!videoPublishedAt_sym := as.POSIXct(!!videoPublishedAt_sym)
     )
 
-  # Step 1: Identify the authors who meet the condition in their first comment
   authors_of_interest <- data %>%
-    filter(to_know_first_comment == 1) %>%  # Only first comments
-    filter(Doc_name %in% group_videos) %>%  # First comment is on a video in group_videos
-    filter(publishedAt <= contentDetails.videoPublishedAt + days(days_after_release)) %>%  # First comment within specified days after release
-    select(authorChannelId) %>%
+    filter(to_know_first_comment == 1) %>%
+    filter(!!doc_name_sym %in% group_videos) %>%
+    filter(!!publishedAt_sym <= (!!videoPublishedAt_sym + days(days_after_release))) %>%
+    select(!!author_id_sym) %>%
     distinct()
 
-  # Step 2: Filter all observations of these authors
   group_data <- data %>%
-    filter(authorChannelId %in% authors_of_interest$authorChannelId)
+    filter(!!author_id_sym %in% authors_of_interest[[user_id]])
 
   return(group_data)
 }

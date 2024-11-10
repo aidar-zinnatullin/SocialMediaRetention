@@ -2,16 +2,34 @@
 % Please edit documentation in R/get_group_data_time.R
 \name{get_group_data_time}
 \alias{get_group_data_time}
-\title{Extract Group Data Based on Initial Interaction within a Specified Time Frame}
+\title{This function identifies commenters whose first comment was on a video in a specified group (e.g., treated or control),
+and who made their first comment within a specified number of days after the video release.
+It then retrieves all comments made by these commenters.}
 \usage{
-get_group_data_time(data, group_videos, days_after_release = 7)
+get_group_data_time(
+  data,
+  group_videos,
+  days_after_release = 7,
+  activity_time,
+  higher_level_pub_time,
+  higher_level_id,
+  user_id
+)
 }
 \arguments{
-\item{data}{The preprocessed data frame containing comment data.}
+\item{data}{The data frame containing comment data.}
 
-\item{group_videos}{A vector of `Doc_name` values representing the group of interest (treated or control).}
+\item{group_videos}{A vector of video identifiers (e.g., `Doc_name`) representing the group of interest.}
 
 \item{days_after_release}{Number of days after video release within which the first comment must have been made (default is 7).}
+
+\item{activity_time}{A string specifying the column name for the comment's publication time.}
+
+\item{higher_level_pub_time}{A string specifying the column name for the video's publication time.}
+
+\item{higher_level_id}{A string specifying the column name for the video identifier.}
+
+\item{user_id}{A string specifying the column name for the commenter identifier.}
 }
 \value{
 A data frame containing all comments from commenters whose first comment was on a video in `group_videos` within the specified time frame.
@@ -23,6 +41,14 @@ It then retrieves all comments made by these commenters.
 }
 \examples{
 \dontrun{
-treated_data <- get_group_data(preprocessed_data, treated_group, days_after_release = 7)
+treated_data <- get_group_data_time(
+    data = preprocessed_data,
+    group_videos = treated_group,
+    days_after_release = 7,
+    activity_time = "publishedAt",
+    higher_level_pub_time = "contentDetails.videoPublishedAt",
+    higher_level_id = "Doc_name",
+    user_id = "authorChannelId"
+)
 }
 }

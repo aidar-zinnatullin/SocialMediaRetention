@@ -2,16 +2,27 @@
 % Please edit documentation in R/preprocess_comments.R
 \name{preprocess_comments}
 \alias{preprocess_comments}
-\title{Preprocess Comment Data}
+\title{This function preprocesses the comment data by adding a column that indicates
+the order of comments for each user based on a specified time variable.}
 \usage{
-preprocess_comments(data)
+preprocess_comments(data, user_id, activity_time)
 }
 \arguments{
-\item{data}{The comment data frame.}
+\item{data}{The data frame containing comment data.}
+
+\item{user_id}{A string specifying the column name to group by (e.g., user ID).}
+
+\item{activity_time}{A string specifying the time variable to order the comments (e.g., time of activity).}
 }
 \value{
-A preprocessed data frame.
+A data frame with an additional column `to_know_first_comment` indicating the order of comments.
 }
 \description{
-This function preprocesses the comment data by adding necessary columns and filtering.
+This function preprocesses the comment data by adding a column that indicates
+the order of comments for each user based on a specified time variable.
+}
+\examples{
+\dontrun{
+preprocessed_data <- preprocess_comments(data, user_id = "authorChannelId", activity_time = "publishedAt")
+}
 }
