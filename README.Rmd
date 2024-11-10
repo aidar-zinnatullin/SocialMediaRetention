@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of SocialMediaRetention is to compute the retention rates for two cohorts of users (YouTube commenters at the moment).
+SocialMediaRetention aims to compute the retention rates for two cohorts of users (for instance, YouTube commenters who interact with videos released at different periods). Here is an example: <https://firstmonday.org/ojs/index.php/fm/article/view/12882>
 
 ## Installation
 
