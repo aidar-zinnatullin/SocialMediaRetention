@@ -24,38 +24,40 @@
 calculate_retention <- function(data, intervals = seq(30, 450, 30),
                                 higher_level_pub_time, activity_time,
                                 higher_level_id, user_id) {
-  library(dplyr)
-  library(lubridate)
-  library(rlang)
 
-  videoPublishedAt_sym <- sym(higher_level_pub_time)
-  publishedAt_sym <- sym(activity_time)
-  doc_name_sym <- sym(higher_level_id)
-  author_id_sym <- sym(user_id)
+  videoPublishedAt_sym <- rlang::sym(higher_level_pub_time)
+  publishedAt_sym <- rlang::sym(activity_time)
+  doc_name_sym <- rlang::sym(higher_level_id)
+  author_id_sym <- rlang::sym(user_id)
 
-  data <- data %>%
-    mutate(
+  data <- data |>
+    dplyr::mutate(
       !!videoPublishedAt_sym := as.POSIXct(!!videoPublishedAt_sym),
       !!publishedAt_sym := as.POSIXct(!!publishedAt_sym)
-    )
-
-  data <- data %>%
-    mutate(
+    ) |>
+    dplyr::mutate(
       first_interaction_video_publication_time = !!videoPublishedAt_sym,
-      time_diff_days = as.numeric(difftime(!!publishedAt_sym, first_interaction_video_publication_time, units = "days"))
-    ) %>%
-    rowwise() %>%
-    mutate(
+      time_diff_days = as.numeric(difftime(
+        !!publishedAt_sym,
+        first_interaction_video_publication_time,
+        units = "days"
+      ))
+    ) |>
+    dplyr::mutate(
       retention_period = findInterval(time_diff_days, intervals)
     )
 
-  retention_data <- data %>%
-    group_by(retention_period, !!doc_name_sym) %>%
-    summarise(Commenters = n_distinct(!!author_id_sym), .groups = 'drop') %>%
-    group_by(!!doc_name_sym) %>%
-    mutate(percentage = Commenters / max(Commenters)) %>%
-    ungroup()
+  retention_data <- data |>
+    dplyr::group_by(retention_period, !!doc_name_sym) |>
+    dplyr::summarise(
+      Commenters = dplyr::n_distinct(!!author_id_sym),
+      .groups = 'drop'
+    ) |>
+    dplyr::group_by(!!doc_name_sym) |>
+    dplyr::mutate(
+      percentage = Commenters / max(Commenters)
+    ) |>
+    dplyr::ungroup()
 
   return(retention_data)
 }
-

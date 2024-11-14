@@ -6,10 +6,18 @@
 #' @return A data frame with mean and confidence intervals.
 #' @export
 compute_bootstrap_ci <- function(data, n_bootstrap = 1000, confidence_intervals = 0.95) {
-  library(Hmisc)
   set.seed(123)
-  ci_data <- data %>%
-    group_by(retention_period) %>%
-    do(data.frame(rbind(smean.cl.boot(.$percentage, conf.int = confidence_intervals, B =n_bootstrap, na.rm =TRUE, reps=TRUE))))
+  ci_data <- dplyr::group_by(data, retention_period) |>
+    dplyr::group_modify(~ {
+      result <- Hmisc::smean.cl.boot(
+        .x$percentage,
+        conf.int = confidence_intervals,
+        B = n_bootstrap,
+        na.rm = TRUE,
+        reps = TRUE
+      )
+      data.frame(t(result))
+    }) |>
+    dplyr::ungroup()
   return(ci_data)
 }

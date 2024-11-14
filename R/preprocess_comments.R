@@ -11,14 +11,12 @@
 #' }
 #' @export
 preprocess_comments <- function(data, user_id, activity_time) {
-  library(dplyr)
+  group_by_var_sym <- rlang::sym(user_id)
+  publishedAt_var_sym <- rlang::sym(activity_time)
 
-  group_by_var_sym <- sym(user_id)
-  publishedAt_var_sym <- sym(activity_time)
-  data <- data %>%
-    group_by(!!group_by_var_sym) %>%
-    mutate(to_know_first_comment = row_number(!!publishedAt_var_sym)) %>%
-    ungroup()
-
+  data <- data |>
+    dplyr::group_by(!!group_by_var_sym) |>
+    dplyr::mutate(to_know_first_comment = dplyr::row_number(!!publishedAt_var_sym)) |>
+    dplyr::ungroup()
   return(data)
 }
