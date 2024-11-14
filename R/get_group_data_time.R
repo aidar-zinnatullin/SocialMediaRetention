@@ -26,31 +26,28 @@
 get_group_data_time <- function(data, group_videos, days_after_release = 7,
                                 activity_time, higher_level_pub_time,
                                 higher_level_id, user_id) {
-  # Ensure necessary packages are loaded
-  library(dplyr)
-  library(lubridate)  # For date arithmetic
-  library(rlang)      # For tidy evaluation
 
-  publishedAt_sym <- sym(activity_time)
-  videoPublishedAt_sym <- sym(higher_level_pub_time)
-  doc_name_sym <- sym(higher_level_id)
-  author_id_sym <- sym(user_id)
+  publishedAt_sym <- rlang::sym(activity_time)
+  videoPublishedAt_sym <- rlang::sym(higher_level_pub_time)
+  doc_name_sym <- rlang::sym(higher_level_id)
+  author_id_sym <- rlang::sym(user_id)
 
-  data <- data %>%
-    mutate(
+  data <- data |>
+    dplyr::mutate(
       !!publishedAt_sym := as.POSIXct(!!publishedAt_sym),
-      !!videoPublishedAt_sym := as.POSIXct(!!videoPublishedAt_sym)
+      !!videoPublishedAt_sym := as.POSIXct(!!videoPublishedAt_sym),
+      date_after_release = (!!videoPublishedAt_sym) + lubridate::days(days_after_release)
     )
 
-  authors_of_interest <- data %>%
-    filter(to_know_first_comment == 1) %>%
-    filter(!!doc_name_sym %in% group_videos) %>%
-    filter(!!publishedAt_sym <= (!!videoPublishedAt_sym + days(days_after_release))) %>%
-    select(!!author_id_sym) %>%
-    distinct()
+  authors_of_interest <- data |>
+    dplyr::filter(to_know_first_comment == 1) |>
+    dplyr::filter(!!doc_name_sym %in% group_videos) |>
+    dplyr::filter(!!publishedAt_sym <= date_after_release) |>
+    dplyr::select(!!author_id_sym) |>
+    dplyr::distinct()
 
-  group_data <- data %>%
-    filter(!!author_id_sym %in% authors_of_interest[[user_id]])
+  group_data <- data |>
+    dplyr::filter(!!author_id_sym %in% authors_of_interest[[user_id]])
 
   return(group_data)
 }
