@@ -32,14 +32,31 @@ What is special about using `README.Rmd` instead of just `README.md`?
 You can include R chunks like so:
 
 ``` r
-summary(cars)
-#>      speed           dist       
-#>  Min.   : 4.0   Min.   :  2.00  
-#>  1st Qu.:12.0   1st Qu.: 26.00  
-#>  Median :15.0   Median : 36.00  
-#>  Mean   :15.4   Mean   : 42.98  
-#>  3rd Qu.:19.0   3rd Qu.: 56.00  
-#>  Max.   :25.0   Max.   :120.00
+load("data/retention_control.Rdata")
+load("data/retention_treat.Rdata")
+treated_ci_data <- compute_bootstrap_ci(retention_data_treated, n_bootstrap = 100, confidence_intervals = 0.95)
+head(treated_ci_data, n = 5)
+#> # A tibble: 5 × 4
+#>   retention_period   Mean  Lower  Upper
+#>              <int>  <dbl>  <dbl>  <dbl>
+#> 1                0 0.988  0.977  0.996 
+#> 2                1 0.0318 0.0167 0.0434
+#> 3                2 0.0336 0.0176 0.0542
+#> 4                3 0.0381 0.0204 0.0555
+#> 5                4 0.0530 0.0347 0.0757
+```
+
+``` r
+control_ci_data <- compute_bootstrap_ci(retention_data_control, n_bootstrap = 100, confidence_intervals = 0.95)
+head(control_ci_data, n = 5)
+#> # A tibble: 5 × 4
+#>   retention_period    Mean   Lower   Upper
+#>              <int>   <dbl>   <dbl>   <dbl>
+#> 1                0 0.992   0.983   0.997  
+#> 2                1 0.00786 0.00652 0.00948
+#> 3                2 0.00594 0.00386 0.00943
+#> 4                3 0.00302 0.00247 0.00370
+#> 5                4 0.00247 0.00203 0.00288
 ```
 
 You’ll still need to render `README.Rmd` regularly, to keep `README.md`

@@ -39,16 +39,24 @@ library(SocialMediaRetention)
 
 What is special about using `README.Rmd` instead of just `README.md`? You can include R chunks like so:
 
-```{r cars}
-summary(cars)
+```{r treated}
+load("data/retention_control.Rdata")
+load("data/retention_treat.Rdata")
+treated_ci_data <- compute_bootstrap_ci(retention_data_treated, n_bootstrap = 100, confidence_intervals = 0.95)
+head(treated_ci_data, n = 5)
 ```
 
+```{r control}
+control_ci_data <- compute_bootstrap_ci(retention_data_control, n_bootstrap = 100, confidence_intervals = 0.95)
+head(control_ci_data, n = 5)
+```
 You'll still need to render `README.Rmd` regularly, to keep `README.md` up-to-date. `devtools::build_readme()` is handy for this.
 
 You can also embed plots, for example:
 
 ```{r pressure, echo = FALSE}
-plot(pressure)
+plot <- visualize_retention(treated_ci_data, control_ci_data)
+plot
 ```
 
 In that case, don't forget to commit and push the resulting figure files, so they display on GitHub and CRAN.
