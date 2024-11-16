@@ -2,8 +2,12 @@ Package: SocialMediaRetention
 Type: Package
 Title: This R package computes retention rates of social media users (at the current version, primarily YouTube commenters)
 Version: 0.1.0
-Author: Aidar Zinnatullin
-Maintainer: <aidar.zinnatullin@rptu.de>
+Author: c(person(given = "Aidar",
+           family = "Zinnatullin",
+           role = c("aut", "cre"),
+           email = "aidar.zinnatullin@rptu.de",
+           comment = c(ORCID = "0000-0001-9465-044X"))
+Maintainer: Aidar Zinnatullin, <aidar.zinnatullin@rptu.de>
 Description: This R package computes the current version's retention rates of YouTube commenters.
     It also provides the function to visualize the retention rate with bootstrap confidence intervals
 License: MIT + file LICENSE
