@@ -22,11 +22,35 @@ devtools::install_github("aidar-zinnatullin/SocialMediaRetention")
 
 ## Example
 
-This is a basic example which shows you how to solve a common problem:
+With this package, you can first preprocess social media data by adding
+a column that indicates the order of comments for each user based on a
+specified time variable.
 
 ``` r
 library(SocialMediaRetention)
-## basic example code
+preprocessed_data <- preprocess_comments(test_data, user_id = "authorChannelId", activity_time = "publishedAt")
+```
+
+Then, you can identify social media user (e.g., YouTube commenters)
+whose first comment was on a video in a specified period of time (e.g.,
+treated or control), and who made their first comment within a specified
+number of days (parameter `days_after_release`) after the video release.
+It then retrieves all comments made by these commenters.
+
+``` r
+load("data/treated_hashed_video.RData")
+load("data/control_hashed_video.RData")
+```
+
+``` r
+treated_data <- get_group_data_time(preprocessed_data, group_videos = treated_group, 
+                                    days_after_release = 7, activity_time = "publishedAt", 
+                                    higher_level_pub_time = "contentDetails.videoPublishedAt", 
+                                    higher_level_id =  "Doc_name", user_id = "authorChannelId")
+control_data <- get_group_data_time(preprocessed_data, group_videos = control_group, 
+                                    days_after_release = 7, activity_time = "publishedAt", 
+                                    higher_level_pub_time = "contentDetails.videoPublishedAt", 
+                                    higher_level_id =  "Doc_name", user_id = "authorChannelId")
 ```
 
 What is special about using `README.Rmd` instead of just `README.md`?
@@ -60,9 +84,6 @@ head(control_ci_data, n = 5)
 #> 5                4 0.00766 0.00197 0.0166
 ```
 
-You’ll still need to render `README.Rmd` regularly, to keep `README.md`
-up-to-date. `devtools::build_readme()` is handy for this.
-
 The `visualize_retention` command generates a graph that displays
 Retention Rates Over Time. The plot showcases how the proportion of
 users retained varies across different retention periods (in months) and
@@ -78,9 +99,6 @@ plot
 ```
 
 <img src="man/figures/README-pressure-1.png" width="100%" />
-
-In that case, don’t forget to commit and push the resulting figure
-files, so they display on GitHub and CRAN.
 
 ## References
 
