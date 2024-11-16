@@ -37,26 +37,26 @@ load("data/retention_treat.Rdata")
 treated_ci_data <- compute_bootstrap_ci(retention_data_treated, n_bootstrap = 100, confidence_intervals = 0.95)
 head(treated_ci_data, n = 5)
 #> # A tibble: 5 × 4
-#>   retention_period   Mean  Lower  Upper
-#>              <int>  <dbl>  <dbl>  <dbl>
-#> 1                0 0.988  0.977  0.996 
-#> 2                1 0.0318 0.0167 0.0434
-#> 3                2 0.0336 0.0176 0.0542
-#> 4                3 0.0381 0.0204 0.0555
-#> 5                4 0.0530 0.0347 0.0757
+#>   retention_period    Mean   Lower  Upper
+#>              <int>   <dbl>   <dbl>  <dbl>
+#> 1                0 1       1       1     
+#> 2                1 0.00986 0.00371 0.0161
+#> 3                2 0.187   0.0169  0.511 
+#> 4                3 0.0768  0.0451  0.108 
+#> 5                4 0.0497  0.0160  0.0937
 ```
 
 ``` r
 control_ci_data <- compute_bootstrap_ci(retention_data_control, n_bootstrap = 100, confidence_intervals = 0.95)
 head(control_ci_data, n = 5)
 #> # A tibble: 5 × 4
-#>   retention_period    Mean   Lower   Upper
-#>              <int>   <dbl>   <dbl>   <dbl>
-#> 1                0 0.992   0.983   0.997  
-#> 2                1 0.00786 0.00652 0.00948
-#> 3                2 0.00594 0.00386 0.00943
-#> 4                3 0.00302 0.00247 0.00370
-#> 5                4 0.00247 0.00203 0.00288
+#>   retention_period    Mean   Lower  Upper
+#>              <int>   <dbl>   <dbl>  <dbl>
+#> 1                0 0.999   0.997   1     
+#> 2                1 0.00864 0.00374 0.0148
+#> 3                2 0.0106  0.00532 0.0174
+#> 4                3 0.144   0.0174  0.363 
+#> 5                4 0.00766 0.00197 0.0166
 ```
 
 You’ll still need to render `README.Rmd` regularly, to keep `README.md`
