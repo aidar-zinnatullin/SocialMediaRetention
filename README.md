@@ -8,8 +8,7 @@
 
 `SocialMediaRetention` aims to compute the retention rates for two
 cohorts of users (for instance, YouTube commenters who interact with
-videos released at different periods). Here is an example:
-<https://firstmonday.org/ojs/index.php/fm/article/view/12882>
+videos released at different periods).
 
 ## Installation
 
@@ -38,11 +37,6 @@ number of days (parameter `days_after_release`) after the video release.
 It then retrieves all comments made by these commenters.
 
 ``` r
-load("data/treated_hashed_video.RData")
-load("data/control_hashed_video.RData")
-```
-
-``` r
 treated_data <- get_group_data_time(preprocessed_data, group_videos = treated_group, 
                                     days_after_release = 7, activity_time = "publishedAt", 
                                     higher_level_pub_time = "contentDetails.videoPublishedAt", 
@@ -53,12 +47,36 @@ control_data <- get_group_data_time(preprocessed_data, group_videos = control_gr
                                     higher_level_id =  "Doc_name", user_id = "authorChannelId")
 ```
 
-What is special about using `README.Rmd` instead of just `README.md`?
-You can include R chunks like so:
+We can calculate the retention rates of users (function
+`calculate_retention`) over specified time intervals (`intervals`). You
+will have to select the column names for the higher-level content’s
+publication time (`higher_level_pub_time`) and its ID
+(`higher_level_id`), the user’s activity time (e.g., commenting,
+parameter `activity_time`) and the user’s ID (`user_id`).
 
 ``` r
-load("data/retention_control.Rdata")
-load("data/retention_treat.Rdata")
+retention_data_treated <- calculate_retention(treated_data, intervals = seq(30, 450, 30), 
+                                              higher_level_pub_time = "contentDetails.videoPublishedAt",
+                                              activity_time = "publishedAt", higher_level_id = "Doc_name",
+                                              user_id =  "authorChannelId")
+
+retention_data_control <- calculate_retention(control_data, intervals = seq(30, 450, 30), 
+                                              higher_level_pub_time = "contentDetails.videoPublishedAt",
+                                              activity_time = "publishedAt", higher_level_id = "Doc_name",
+                                              user_id =  "authorChannelId")
+```
+
+The `compute_bootstrap_ci` function calculates bootstrap-based
+confidence intervals for percentage values within a given dataset. It
+groups the data by retention_period and applies `the smean.cl.boot`
+function from the `Hmisc` package to compute the mean and confidence
+limits (Harrell & Harrell, 2019). The function runs `n_bootstrap`
+resampling iterations (default is 1000) and uses a specified confidence
+level (default is 95 percent). The result is a data frame containing the
+computed confidence intervals for each group. The random seed is set for
+reproducibility.
+
+``` r
 treated_ci_data <- compute_bootstrap_ci(retention_data_treated, n_bootstrap = 100, confidence_intervals = 0.95)
 head(treated_ci_data, n = 5)
 #> # A tibble: 5 × 4
@@ -85,13 +103,8 @@ head(control_ci_data, n = 5)
 ```
 
 The `visualize_retention` command generates a graph that displays
-Retention Rates Over Time. The plot showcases how the proportion of
-users retained varies across different retention periods (in months) and
-compares two groups: Control and Treated. This visualization uses lines
-with shaded areas to highlight the trends and differences in user
-retention between these groups over a specified timeframe. This tool is
-ideal for analyzing the long-term impact of interventions or treatments
-on user engagement.
+retention rates. Data and the showcase plot were based on the paper
+about YouTube commenters’ activities (Zinnatullin, 2023).
 
 ``` r
 plot <- visualize_retention(treated_data = progov_treated_yt_n, control_data = progov_control_yt_n)
@@ -102,7 +115,11 @@ plot
 
 ## References
 
-1.  Zinnatullin, A. (2023). Navalny’s direct-casting: Affective
+1.  Harrell Jr, F. E., & Harrell Jr, M. F. E. (2019). Package ‘hmisc’.
+    CRAN2018, 2019, 235-236,
+    <https://cran.uib.no/web/packages/Hmisc/Hmisc.pdf>.
+
+2.  Zinnatullin, A. (2023). Navalny’s direct-casting: Affective
     attunement and polarization in the online community of the most
     vocal Russian opposition politician. First Monday,
     <https://firstmonday.org/ojs/index.php/fm/article/view/12882>.
