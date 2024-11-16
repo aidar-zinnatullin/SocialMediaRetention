@@ -6,14 +6,15 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-SocialMediaRetention aims to compute the retention rates for two cohorts
-of users (for instance, YouTube commenters who interact with videos
-released at different periods). Here is an example:
+`SocialMediaRetention` aims to compute the retention rates for two
+cohorts of users (for instance, YouTube commenters who interact with
+videos released at different periods). Here is an example:
 <https://firstmonday.org/ojs/index.php/fm/article/view/12882>
 
 ## Installation
 
-You can install the development version of SocialMediaRetention like so:
+You can install the development version of `SocialMediaRetention` like
+so:
 
 ``` r
 devtools::install_github("aidar-zinnatullin/SocialMediaRetention")
@@ -62,9 +63,28 @@ head(control_ci_data, n = 5)
 You’ll still need to render `README.Rmd` regularly, to keep `README.md`
 up-to-date. `devtools::build_readme()` is handy for this.
 
-You can also embed plots, for example:
+The `visualize_retention` command generates a graph that displays
+Retention Rates Over Time. The plot showcases how the proportion of
+users retained varies across different retention periods (in months) and
+compares two groups: Control and Treated. This visualization uses lines
+with shaded areas to highlight the trends and differences in user
+retention between these groups over a specified timeframe. This tool is
+ideal for analyzing the long-term impact of interventions or treatments
+on user engagement.
+
+``` r
+plot <- visualize_retention(treated_data = progov_treated_yt_n, control_data = progov_control_yt_n)
+plot
+```
 
 <img src="man/figures/README-pressure-1.png" width="100%" />
 
 In that case, don’t forget to commit and push the resulting figure
 files, so they display on GitHub and CRAN.
+
+## References
+
+1.  Zinnatullin, A. (2023). Navalny’s direct-casting: Affective
+    attunement and polarization in the online community of the most
+    vocal Russian opposition politician. First Monday,
+    <https://firstmonday.org/ojs/index.php/fm/article/view/12882>.
